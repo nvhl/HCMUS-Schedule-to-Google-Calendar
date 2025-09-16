@@ -25,7 +25,16 @@
     * [Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
     * [Safari](https://www.tampermonkey.net/?browser=safari)
 
-### Bước 2: Cài đặt Script
+### Bước 2: (Quan trọng) Bật Chế độ nhà phát triển
+
+Trên các trình duyệt như **Chrome** và **Edge**, bạn cần bật chế độ này để Tampermonkey có đủ quyền hoạt động ổn định.
+
+1.  Mở một tab mới, truy cập vào địa chỉ sau:
+    * Với Chrome: `chrome://extensions`
+    * Với Edge: `edge://extensions`
+2.  Ở góc trên cùng bên phải của trang, tìm và **bật công tắc** có tên **Chế độ dành cho nhà phát triển** (Developer mode).
+
+### Bước 3: Cài đặt Script
 
 1.  **[NHẤP VÀO ĐÂY ĐỂ CÀI ĐẶT SCRIPT](https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar/raw/refs/heads/main/HCMUS-Schedule-to-Google-Calendar.user.js)**
 2.  Sau khi nhấp vào, trình quản lý userscript (Tampermonkey) sẽ mở ra một tab mới.
