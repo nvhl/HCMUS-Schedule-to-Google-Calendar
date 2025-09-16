@@ -32,7 +32,7 @@
 
 ### Bước 2: Cài đặt Script
 
-1.  **[NHẤP VÀO ĐÂY ĐỂ CÀI ĐẶT SCRIPT](link)**
+1.  **[NHẤP VÀO ĐÂY ĐỂ CÀI ĐẶT SCRIPT]([link](https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar/raw/refs/heads/main/HCMUS-Schedule-to-Google-Calendar.user.js))**
 2.  Sau khi nhấp vào, trình quản lý userscript (ví dụ: Tampermonkey) sẽ mở ra một tab mới.
 3.  Nhấp vào nút **Install** để xác nhận cài đặt.
 
