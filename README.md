@@ -33,8 +33,6 @@
 ### Bước 2: Cài đặt Script
 
 1.  **[NHẤP VÀO ĐÂY ĐỂ CÀI ĐẶT SCRIPT](link)**
-    *(Lưu ý: Bạn cần thay thế link trên bằng link file `.user.js` trên repository GitHub của bạn)*
-
 2.  Sau khi nhấp vào, trình quản lý userscript (ví dụ: Tampermonkey) sẽ mở ra một tab mới.
 3.  Nhấp vào nút **Install** để xác nhận cài đặt.
 
