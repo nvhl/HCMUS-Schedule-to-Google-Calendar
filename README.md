@@ -13,7 +13,7 @@
 
 ## ⚙️ Cài đặt
 
-Để sử dụng, bạn cần thực hiện 2 bước:
+Để sử dụng, bạn cần thực hiện 3 bước:
 
 ### Bước 1: Cài đặt Trình quản lý UserScript
 
