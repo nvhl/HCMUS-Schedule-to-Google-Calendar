@@ -47,7 +47,7 @@ Vậy là xong!
 4.  Một tab Google Calendar mới sẽ mở ra với toàn bộ thông tin đã được điền sẵn. Hãy kiểm tra lại, chỉnh sửa nếu cần và nhấn **Lưu (Save)**.
 5.  **Để tải lại các link**, chỉ cần nhấp vào tiêu đề cột **Google Calendar**.
 
-## 🔧 Tùy chỉnh (Tùy chọn)
+## 🔧 Tùy chỉnh
 
 Nếu học kỳ của bạn có số tuần khác 15, bạn có thể dễ dàng thay đổi:
 1.  Mở trình duyệt, nhấp vào biểu tượng Tampermonkey -> **Dashboard**.
