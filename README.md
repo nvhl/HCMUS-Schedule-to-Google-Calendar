@@ -17,7 +17,7 @@
 
 ### Bước 1: Cài đặt Trình quản lý UserScript
 
-Đây là một tiện ích mở rộng (extension) cho trình duyệt để quản lý các script như thế này. Hãy chọn **một trong các** trình quản lý sau tùy theo trình duyệt bạn đang sử dụng:
+Đây là một tiện ích mở rộng (extension) cho trình duyệt để quản lý các script như thế này. Hãy nhấp đúng link theo trình duyệt bạn đang sử dụng:
 
 * **Tampermonkey**
     * [Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
@@ -29,10 +29,18 @@
 
 Trên các trình duyệt như **Chrome** và **Edge**, bạn cần bật chế độ này để Tampermonkey có đủ quyền hoạt động ổn định.
 
-1.  Mở một tab mới, truy cập vào địa chỉ sau:
-    * Với Chrome: `chrome://extensions`
-    * Với Edge: `edge://extensions`
-2.  Ở góc trên cùng bên phải của trang, tìm và **bật công tắc** có tên **Chế độ dành cho nhà phát triển** (Developer mode).
+#### **🔵 Trên Google Chrome**
+
+1.  Mở một tab mới, truy cập vào địa chỉ: `chrome://extensions`
+2.  Ở góc trên cùng bên phải, bật công tắc **Chế độ dành cho nhà phát triển** (Developer mode).
+3.  Tìm tiện ích **Tampermonkey** trong danh sách và nhấp vào nút **Chi tiết** (Details).
+4.  Trên trang chi tiết vừa mở ra, cuộn xuống và tìm mục **Cho phép tập lệnh của người dùng** (Allow user scripts). Hãy **bật** công tắc này lên.
+
+    
+#### **🔵 Trên Microsoft Edge**
+
+1.  Mở một tab mới, truy cập vào địa chỉ: `edge://extensions`
+2.  Ở góc dưới cùng bên trái, bật công tắc **Chế độ nhà phát triển** (Developer mode).
 
 ### Bước 3: Cài đặt Script
 
