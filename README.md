@@ -19,16 +19,11 @@
 
 Đây là một tiện ích mở rộng (extension) cho trình duyệt để quản lý các script như thế này. Hãy chọn **một trong các** trình quản lý sau tùy theo trình duyệt bạn đang sử dụng:
 
-* **Tampermonkey** (Phổ biến nhất, hỗ trợ nhiều trình duyệt)
+* **Tampermonkey**
     * [Chrome](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)
     * [Firefox](https://addons.mozilla.org/vi/firefox/addon/tampermonkey/)
     * [Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd)
     * [Safari](https://www.tampermonkey.net/?browser=safari)
-
-* **Violentmonkey** (Một lựa chọn mã nguồn mở phổ biến khác)
-    * [Chrome](https://chrome.google.com/webstore/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag)
-    * [Firefox](https://addons.mozilla.org/vi/firefox/addon/violentmonkey/)
-    * [Edge](https://microsoftedge.microsoft.com/addons/detail/violentmonkey/eeagobfjdenkkddgclojhaiejeojjdik)
 
 ### Bước 2: Cài đặt Script
 
