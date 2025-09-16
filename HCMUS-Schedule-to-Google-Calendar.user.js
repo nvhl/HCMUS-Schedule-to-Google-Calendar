@@ -4,6 +4,7 @@
 // @version      1.0
 // @description  Một UserScript giúp sinh viên HCMUS đồng bộ hóa thời khóa biểu từ trang portal sang Google Calendar.
 // @author       HoangLong - SV K25 Nhom nganh MT&CNTT
+// @downloadURL  https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar/raw/refs/heads/main/HCMUS-Schedule-to-Google-Calendar.user.js
 // @updateURL    https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar/raw/refs/heads/main/HCMUS-Schedule-to-Google-Calendar.user.js
 // @match        https://new-portal*.hcmus.edu.vn/SinhVien.aspx?pid=212*
 // @grant        none
