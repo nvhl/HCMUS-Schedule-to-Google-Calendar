@@ -68,28 +68,19 @@
         });
     }
 
-    /**
-     * Phân tích chuỗi lịch học, có thể xử lý cả 2 định dạng (có và không có thông tin cơ sở)
-     */
     function parseScheduleString(scheduleStr) {
-        // Regex này sẽ tìm kiếm thông tin cơ sở, nhưng để nó ở dạng tùy chọn (không bắt buộc)
         const regex = /(T[2-7]|CN)\(([\d.]+)-([\d.]+)\)(?:-P\.(cs[12]):(.+))?/;
         const match = scheduleStr.match(regex);
         if (!match) return null;
-
         const [_, day, startPeriod, endPeriod, campus, room] = match;
-
         let campusId, location;
-        // Nếu tìm thấy thông tin cơ sở trong chuỗi (ví dụ: 'cs2')
         if (campus) {
             campusId = campus;
             location = `Cơ sở ${campus.replace('cs', '')}, Phòng ${room.trim()}`;
         } else {
-            // Nếu không, mặc định là Cơ sở 1
             campusId = 'cs1';
             location = `Cơ sở 1 (NVC)`;
         }
-
         return { day, startPeriod, endPeriod, location, campusId };
     }
 
@@ -105,10 +96,10 @@
     function createGoogleCalendarLink(info) {
         const { fullSubjectName, day, startPeriod, endPeriod, location, scheduleStr, campusId, startDateText, subjectCode, classGroup } = info;
         const timeMap = campusId === 'cs1' ? TIME_MAP_CS1 : TIME_MAP_CS2;
-
-        const startTime = timeMap[startPeriod]?.start ?? timeMap[Math.ceil(parseFloat(startPeriod))]?.start;
-        const endTime = timeMap[endPeriod]?.end ?? timeMap[Math.floor(parseFloat(endPeriod))]?.end;
+        const startTime = timeMap[startPeriod]?.start;
+        const endTime = timeMap[endPeriod]?.end;
         const weekday = WDAY_MAP[day];
+
         if (!startTime || !endTime || !weekday) {
              console.warn("Bỏ qua lịch không hợp lệ:", {scheduleStr, startTime, endTime});
              return null;
@@ -207,15 +198,6 @@
         });
         if (generatedCount > 0) console.log(`Đã tạo ${generatedCount} link Google Calendar.`);
     }
-
-    const observer = new MutationObserver((mutations, obs) => {
-        const table = document.getElementById('tbSVKQ');
-        if (table) {
-            processAndGenerateLinks();
-            obs.disconnect();
-        }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
+    setTimeout(processAndGenerateLinks, 700);
 
 })();
