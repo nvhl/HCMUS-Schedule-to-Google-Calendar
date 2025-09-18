@@ -2,7 +2,7 @@
 // @name         HCMUS Schedule to Google Calendar
 // @namespace    http://tampermonkey.net/
 // @version      1.1
-// @description  Tự động thêm nút "Thêm vào lịch" vào trang Kết quả ĐKHP. Nhấp vào tiêu đề cột để tải lại.
+// @description  Một UserScript giúp sinh viên HCMUS đồng bộ hóa thời khóa biểu từ trang portal sang Google Calendar.
 // @author       HoangLong - SV K25 Nhom nganh MT&CNTT
 // @homepage     https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=hcmus.edu.vn
@@ -68,15 +68,28 @@
         });
     }
 
+    /**
+     * Phân tích chuỗi lịch học, có thể xử lý cả 2 định dạng (có và không có thông tin cơ sở)
+     */
     function parseScheduleString(scheduleStr) {
-        // Regex này không có thông tin cơ sở, vì nó nằm trong chuỗi Lịch Học của môn Hóa Đại Cương 1
-        const regex = /(T[2-7]|CN)\(([\d.]+)-([\d.]+)\)/;
+        // Regex này sẽ tìm kiếm thông tin cơ sở, nhưng để nó ở dạng tùy chọn (không bắt buộc)
+        const regex = /(T[2-7]|CN)\(([\d.]+)-([\d.]+)\)(?:-P\.(cs[12]):(.+))?/;
         const match = scheduleStr.match(regex);
         if (!match) return null;
-        const [_, day, startPeriod, endPeriod] = match;
-        // Mặc định là cơ sở 1 (NVC) vì không có thông tin P.csX
-        const campusId = 'cs1';
-        const location = 'Cơ sở 1 (NVC)';
+
+        const [_, day, startPeriod, endPeriod, campus, room] = match;
+
+        let campusId, location;
+        // Nếu tìm thấy thông tin cơ sở trong chuỗi (ví dụ: 'cs2')
+        if (campus) {
+            campusId = campus;
+            location = `Cơ sở ${campus.replace('cs', '')}, Phòng ${room.trim()}`;
+        } else {
+            // Nếu không, mặc định là Cơ sở 1
+            campusId = 'cs1';
+            location = `Cơ sở 1 (NVC)`;
+        }
+
         return { day, startPeriod, endPeriod, location, campusId };
     }
 
@@ -181,7 +194,6 @@
                         if (link) {
                             const a = document.createElement('a');
                             a.href = link;
-                            // Phân biệt nút bấm cho các lịch khác nhau của cùng 1 môn
                             a.textContent = scheduleParts.length > 1 ? `Thêm lịch ${index + 1}` : 'Thêm vào lịch';
                             a.title = `Thêm '${fullSubjectName}' - Buổi ${index + 1} vào Lịch`;
                             a.target = '_blank';
