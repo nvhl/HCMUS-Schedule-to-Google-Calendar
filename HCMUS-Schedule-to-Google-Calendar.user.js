@@ -1,12 +1,14 @@
 // ==UserScript==
 // @name         HCMUS Schedule to Google Calendar
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  Một UserScript giúp sinh viên HCMUS đồng bộ hóa thời khóa biểu từ trang portal sang Google Calendar.
+// @version      1.1
+// @description  Tự động thêm nút "Thêm vào lịch" vào trang Kết quả ĐKHP. Nhấp vào tiêu đề cột để tải lại.
 // @author       HoangLong - SV K25 Nhom nganh MT&CNTT
-// @downloadURL  https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar/raw/refs/heads/main/HCMUS-Schedule-to-Google-Calendar.user.js
-// @updateURL    https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar/raw/refs/heads/main/HCMUS-Schedule-to-Google-Calendar.user.js
-// @match        *.hcmus.edu.vn/SinhVien.aspx?pid=212*
+// @homepage     https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=hcmus.edu.vn
+// @downloadURL  https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar/raw/main/HCMUS-Schedule-to-Google-Calendar.user.js
+// @updateURL    https://github.com/nvhl/HCMUS-Schedule-to-Google-Calendar/raw/main/HCMUS-Schedule-to-Google-Calendar.user.js
+// @match        *://*.hcmus.edu.vn/SinhVien.aspx?pid=212*
 // @grant        none
 // ==/UserScript==
 
@@ -36,12 +38,11 @@
         '13': { start: '18:00', end: '18:50' }, '14': { start: '18:50', end: '19:40' },
         '15': { start: '19:40', end: '20:30' }
     };
-    // --------------------------------------------------------------------------------
 
     const WDAY_MAP = { 'T2': 'MO', 'T3': 'TU', 'T4': 'WE', 'T5': 'TH', 'T6': 'FR', 'T7': 'SA', 'CN': 'SU' };
 
     function addCalendarColumn(table) {
-        if (table.querySelector(`th[data-userscript-column='true']`)) return;
+        if (table.querySelector("th[data-userscript-column='true']")) return;
 
         const headerRow = table.querySelector('thead tr');
         const newHeader = document.createElement('th');
@@ -54,27 +55,31 @@
 
         newHeader.addEventListener('click', () => {
             console.log("Reloading Google Calendar links...");
-            table.querySelectorAll('tbody tr').forEach(row => {
-                const calendarCell = row.cells[row.cells.length - 1];
-                if (calendarCell) calendarCell.innerHTML = '';
+            table.querySelectorAll("tbody tr td[data-userscript-cell='true']").forEach(cell => {
+                cell.innerHTML = '';
             });
             processAndGenerateLinks();
         });
 
         table.querySelectorAll('tbody tr').forEach(row => {
-            row.appendChild(document.createElement('td')).className = 'center';
+            const newCell = row.appendChild(document.createElement('td'));
+            newCell.className = 'center';
+            newCell.setAttribute('data-userscript-cell', 'true');
         });
     }
 
     function parseScheduleString(scheduleStr) {
-        const regex = /(T[2-7]|CN)\(([\d.]+)\-([\d.]+)\)(?:-P\.(cs[12]):(.+))?/;
+        // Regex này không có thông tin cơ sở, vì nó nằm trong chuỗi Lịch Học của môn Hóa Đại Cương 1
+        const regex = /(T[2-7]|CN)\(([\d.]+)-([\d.]+)\)/;
         const match = scheduleStr.match(regex);
         if (!match) return null;
-        const [_, day, startPeriod, endPeriod, campus, room] = match;
-        const campusId = campus || 'cs2';
-        const location = campus ? `Cơ sở ${campus.replace('cs', '')}, Phòng ${room.trim()}` : 'N/A';
+        const [_, day, startPeriod, endPeriod] = match;
+        // Mặc định là cơ sở 1 (NVC) vì không có thông tin P.csX
+        const campusId = 'cs1';
+        const location = 'Cơ sở 1 (NVC)';
         return { day, startPeriod, endPeriod, location, campusId };
     }
+
 
     function formatDateLocal(date, time) {
         const [hours, minutes] = time.split(':');
@@ -87,10 +92,10 @@
     function createGoogleCalendarLink(info) {
         const { fullSubjectName, day, startPeriod, endPeriod, location, scheduleStr, campusId, startDateText, subjectCode, classGroup } = info;
         const timeMap = campusId === 'cs1' ? TIME_MAP_CS1 : TIME_MAP_CS2;
+
         const startTime = timeMap[startPeriod]?.start ?? timeMap[Math.ceil(parseFloat(startPeriod))]?.start;
         const endTime = timeMap[endPeriod]?.end ?? timeMap[Math.floor(parseFloat(endPeriod))]?.end;
         const weekday = WDAY_MAP[day];
-
         if (!startTime || !endTime || !weekday) {
              console.warn("Bỏ qua lịch không hợp lệ:", {scheduleStr, startTime, endTime});
              return null;
@@ -110,13 +115,11 @@
             firstPossibleDate.setTime(baseStartDate.getTime());
             firstPossibleDate.setDate(baseStartDate.getDate() + dayDifference);
 
-            // Tính số tuần đã trôi qua so với ngày học đầu tiên
             if (today > firstPossibleDate) {
                 const weeksPassed = Math.floor((today.getTime() - firstPossibleDate.getTime()) / (1000 * 60 * 60 * 24 * 7));
                 remainingWeeks = SO_TUAN_HOC_DEFAULT - weeksPassed;
             }
         } else {
-            // Fallback: Lên lịch cho tuần tới nếu không có ngày bắt đầu
             const targetDayIndex = Object.keys(WDAY_MAP).indexOf(day);
             const currentDayIndex = (today.getDay() + 6) % 7;
             let dayDifference = targetDayIndex - currentDayIndex;
@@ -145,14 +148,14 @@
             classTypeIndex: 4, scheduleIndex: 5, startDateIndex: 6,
         };
         const table = document.getElementById(config.tableId);
-        if (!table) { console.error("Không tìm thấy bảng 'tbSVKQ'."); return; }
+        if (!table) return;
 
         addCalendarColumn(table);
         let generatedCount = 0;
 
         table.querySelectorAll('tbody tr').forEach(row => {
             const calendarCell = row.cells[row.cells.length - 1];
-            if (calendarCell.innerHTML !== '') return;
+            if (!calendarCell || calendarCell.innerHTML !== '') return;
 
             const subjectCodeCell = row.cells[config.subjectCodeIndex];
             const subjectCell = row.cells[config.nameIndex];
@@ -170,17 +173,19 @@
                 const subjectCode = subjectCodeCell ? subjectCodeCell.textContent.trim() : '';
                 const classGroup = classGroupCell ? classGroupCell.textContent.trim() : '';
 
-                scheduleStr.split(';').map(s => s.trim()).forEach((part, index) => {
+                const scheduleParts = scheduleStr.split(';').map(s => s.trim()).filter(s => s);
+                scheduleParts.forEach((part, index) => {
                     const parsedInfo = parseScheduleString(part);
                     if (parsedInfo) {
                         const link = createGoogleCalendarLink({ ...parsedInfo, fullSubjectName, scheduleStr: part, startDateText, subjectCode, classGroup });
                         if (link) {
                             const a = document.createElement('a');
                             a.href = link;
-                            a.textContent = 'Thêm vào lịch';
-                            a.title = `Thêm '${fullSubjectName}' vào Lịch`;
+                            // Phân biệt nút bấm cho các lịch khác nhau của cùng 1 môn
+                            a.textContent = scheduleParts.length > 1 ? `Thêm lịch ${index + 1}` : 'Thêm vào lịch';
+                            a.title = `Thêm '${fullSubjectName}' - Buổi ${index + 1} vào Lịch`;
                             a.target = '_blank';
-                            a.style.cssText = 'display: inline-block; padding: 3px 6px; background-color: #e8e8e8; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333;';
+                            a.style.cssText = 'display: inline-block; padding: 3px 6px; background-color: #e8e8e8; border: 1px solid #ccc; border-radius: 4px; text-decoration: none; color: #333; margin-bottom: 5px;';
                             calendarCell.appendChild(a);
                             generatedCount++;
                         }
@@ -190,5 +195,15 @@
         });
         if (generatedCount > 0) console.log(`Đã tạo ${generatedCount} link Google Calendar.`);
     }
-    setTimeout(processAndGenerateLinks, 700);
+
+    const observer = new MutationObserver((mutations, obs) => {
+        const table = document.getElementById('tbSVKQ');
+        if (table) {
+            processAndGenerateLinks();
+            obs.disconnect();
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
 })();
